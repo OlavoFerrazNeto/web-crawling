@@ -52,57 +52,79 @@ def calcular_metricas(texto):
         "smog": round(smog, 2),
         "coleman_liau": round(coleman_liau, 2),
         "sentimento": round(sentimento, 3),
-        "subjetividade": round(subjetividade, 3),
+        "subjetividade": round(subjetividade, 3)
     }
 
 # URL do site que vamos "raspar"
 url = "https://www.alura.com.br/empresas/artigos/tendencias-tech-2025?srsltid=AfmBOorTUjmlg_HgHICmsI6k_WNMKhE9e50nysJSAUNIE23yooqb34CV"
+def get_content(url,tag):
+    # Faz a requisição HTTP
+    response = requests.get(url)
+    paragraphs = []
+    # Verifica se a requisição deu certo
+    if response.status_code == 200:
+        # Extrai o conteúdo HTML
+        soup = BeautifulSoup(response.text, "html.parser")
+        # with open("pagina.html", "w", encoding="utf-8") as f:
+        #     f.write(str(soup))
+        # print("Soup:" , soup)
 
-# Faz a requisição HTTP
-response = requests.get(url)
-paragraphs = []
-# Verifica se a requisição deu certo
-if response.status_code == 200:
-    # Extrai o conteúdo HTML
-    soup = BeautifulSoup(response.text, "html.parser")
-    with open("pagina.html", "w", encoding="utf-8") as f:
-        f.write(str(soup))
-    print("Soup:" , soup)
+        # elementos_strong = soup.find_all("strong")
 
-    elementos_strong = soup.find_all("strong")
+        # print("Conteúdo entre <strong>:</n>")
+        # for i, elem in enumerate(elementos_strong, start=1):
+        #     texto = elem.get_text(strip=True)
+        #     if texto:  # Ignorar vazio
+        #         print(f"{i}. {texto}")
+        
+        # # Procura por todos os títulos de notícia
+        # titulos = soup.find_all("h2")  # Geralmente títulos estão em <h2>
 
-    print("Conteúdo entre <strong>:</n>")
-    for i, elem in enumerate(elementos_strong, start=1):
-        texto = elem.get_text(strip=True)
-        if texto:  # Ignorar vazio
-            print(f"{i}. {texto}")
-    
-    # Procura por todos os títulos de notícia
-    titulos = soup.find_all("h2")  # Geralmente títulos estão em <h2>
+        # print("Títulos encontrados:\n")
+        # for i, titulo in enumerate(titulos, start=1):
+        #     texto = titulo.get_text(strip=True)
+        #     if texto:  # Ignorar elementos vazios
+        #         print(f"{i}. {texto}")
 
-    print("Títulos encontrados:\n")
-    for i, titulo in enumerate(titulos, start=1):
-        texto = titulo.get_text(strip=True)
-        if texto:  # Ignorar elementos vazios
-            print(f"{i}. {texto}")
+        ps = soup.find_all(tag)  
 
-    ps = soup.find_all("p")  # Geralmente títulos estão em <h2>
+        print("P encontrados:\n")
+        for i, p in enumerate(ps, start=1):
+            texto = p.get_text(strip=True)
+            if texto:  # Ignorar elementos vazios
+                print(f"{i}. {texto}")
+                metricas = calcular_metricas(texto)
+                metricas["frases"] = texto
+                paragraphs.append(metricas)
+                #paragraphs.append(texto)
+        return paragraphs
+    else:
+        print(f"Erro ao acessar a página: {response.status_code}")
+        return []
 
-    print("P encontrados:\n")
-    for i, p in enumerate(ps, start=1):
-        texto = p.get_text(strip=True)
-        if texto:  # Ignorar elementos vazios
-            print(f"{i}. {texto}")
-            metricas = calcular_metricas(texto)
-            metricas["frases"] = texto
-            paragraphs.append(metricas)
-            #paragraphs.append(texto)
-else:
-    print(f"Erro ao acessar a página: {response.status_code}")
-
+paragraphs = get_content(url=url,tag="p")
 
 print("Estamos aqui")
 df = pd.DataFrame(paragraphs)
 df["media_tamanho_palavra"] = df["quantidade_caracteres"] / df["quantidade_palavras"]
 
-print(df)
+# print(df)
+
+new_url = "https://www.cnnbrasil.com.br/tecnologia/sxsw-2025-conheca-as-10-tecnologias-que-devem-revolucionar-o-mundo/"
+new_content = get_content(url=new_url,tag="p")
+
+print("Estamos aqui")
+new_df = pd.DataFrame(new_content)
+# print(new_df)
+
+last_url = "https://olhardigital.com.br/2025/03/13/pro/as-10-tecnologias-que-vao-abalar-2025-segundo-o-mit/"
+last_content = get_content(url=last_url,tag="p")
+
+print("Estamos aqui")
+last_df = pd.DataFrame(last_content)
+print(last_df)
+
+
+
+
+
