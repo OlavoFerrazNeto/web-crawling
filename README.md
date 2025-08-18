@@ -1,75 +1,146 @@
-# web-crawling
-web crawling
+# 📌 Web Crawling e Análise de Texto
 
-Linguagem: Python
-Sistema Operacional: Windows
-Banco de dados: Mysql
-
-Instalações necessárias para a execução do projeto:
-
-pip install bs4
-pip install nltk
-pip install textstat
-pip install textblob
-pip install mysql-connector-python
-
-
-Motivo da escolha das bibliotecas utilizadas:
-
-
-### 🟢 **BeautifulSoup**
-
-* **Motivo da escolha**: É uma das bibliotecas mais simples e robustas para **web scraping e parsing de HTML**.
-* **Função no projeto**: Extrair o conteúdo bruto dos artigos (título, parágrafos, links, etc.) a partir do HTML coletado.
----
-
-### 🟢 **NLTK (Natural Language Toolkit)**
-
-* **Motivo da escolha**: Biblioteca padrão para **processamento de linguagem natural** (NLP).
-* **Função no projeto**:
-
-  * Tokenizar textos em palavras e frases.
-  * Remover pontuações.
-  * Contar palavras curtas, longas e únicas.
----
-
-### 🟢 **textstat**
-
-* **Motivo da escolha**: Especializada em calcular **métricas de legibilidade**.
-* **Função no projeto**: Gerar indicadores como:
-
-  * Índice de Flesch
-  * Flesch-Kincaid
-  * SMOG
-  * Coleman-Liau
+Projeto de **web crawling** e **análise de textos** com **persistência em banco de dados MySQL**.
+O objetivo é coletar artigos da web, extrair o conteúdo em granularidade de frases, calcular métricas linguísticas e sentimentais e armazenar em banco de forma incremental (sem duplicações).
 
 ---
 
-### 🟢 **TextBlob**
+## 🛠️ Tecnologias utilizadas
 
-* **Motivo da escolha**: Simples e eficaz para **análise de sentimento e subjetividade**.
-* **Função no projeto**: Calcular sentimento positivo/negativo e subjetividade do texto.
----
+* **Linguagem**: Python
+* **Banco de dados**: MySQL
+* **Sistema Operacional**: Realizado no Windows,
 
-### 🟢 **mysql-connector-python**
+### Bibliotecas
 
-* **Motivo da escolha**: Conexão do python com Mysql para estruturaçõ dos dados.
-* **Função no projeto**:
-
-  * Criar a tabela `content_tech`.
-  * Inserir artigos processados.
-  * Implementar carga incremental (verificação por `url` + `frases`).
-  * Garante persistência dos dados já processados.
-  * Evita duplicidade.
+* [BeautifulSoup4] → Parsing HTML e extração de conteúdo
+* [NLTK] → Tokenização, análise de frases e palavras
+* [textstat]→ Métricas de legibilidade
+* [TextBlob] → Análise de sentimento e subjetividade
+* [mysql-connector-python]→ Conexão com MySQL
 
 ---
 
-✅ **Resumo da justificativa**:
-Essas bibliotecas foram escolhidas porque, em conjunto, elas possibilitam:
+## 📂 Estrutura do Projeto
 
-* **Coleta** (BeautifulSoup)
-* **Pré-processamento linguístico** (NLTK)
-* **Métricas objetivas de legibilidade** (textstat)
-* **Métricas subjetivas e emocionais** (TextBlob)
-* **Persistência incremental confiável** (mysql-connector-python)
+```
+web-crawling/
+│
+├── handler.py         # Orquestra o fluxo: scraping, cálculo de métricas e inserção no banco
+├── connection.py      # Conexão com MySQL, criação da tabela, inserção incremental e leitura
+├── README.md          # Documentação do projeto
+└── requirements.txt   # Dependências do projeto
+```
+
+### 🔹 **handler.py**
+
+* `calcular_metricas(texto)` → Calcula todas as métricas linguísticas e sentimentais.
+* `get_content(url, tag)` → Faz scraping da URL, extrai parágrafos e insere no banco de forma incremental.
+
+### 🔹 **connection.py**
+
+* `conectar_mysql()` → Cria conexão com MySQL.
+* `fechar_conexao(conexao)` → Fecha a conexão.
+* `criar_tabela()` → Cria tabela `content_tech` se não existir.
+* `inserir_content_tech(dados)` → Insere dados incrementalmente (verificando `url` + `frases`).
+* `ler_todos_content_tech()` → Lê todos os registros da tabela.
+
+---
+
+## ⚙️ Instalação
+
+### Clone o repositório
+
+```bash
+git clone https://github.com/OlavoFerrazNeto/web-crawling.git
+cd web-crawling
+```
+
+### Crie um ambiente virtual
+
+Linux/MacOS:
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Windows:
+
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+### Instale as dependências
+
+```bash
+pip install -r requirements.txt
+```
+
+Conteúdo de `requirements.txt`:
+
+```
+bs4
+nltk
+textstat
+textblob
+mysql-connector-python
+```
+
+### Configure o banco MySQL
+
+Criação do banco mysql:
+
+```sql
+CREATE DATABASE database_on_case;
+```
+
+Configure o usuário e senha em `connection.py`.
+
+Criação da tabela content_tech:
+Execução da função criar_tabela do arquivo connection.py
+
+### Execução do projeto
+
+```bash
+python handler.py
+```
+
+---
+
+## Decisões tomadas
+
+1. **Coleta de dados**: Optei pelo **BeautifulSoup** por ser simples e eficaz em parsing HTML.
+2. **Processamento NLP**: Utilizei **NLTK** para tokenização e contagem de palavras/frases.
+3. **Métricas de legibilidade**: Adicionei **textstat** por ser especializado nesses cálculos.
+4. **Sentimento e subjetividade**: Escolhi **TextBlob** por oferecer API simples para análise emocional.
+5. **Persistência incremental**: Usei `mysql-connector-python` para garantir que `url + frases` sejam únicos e evitar duplicações.
+6. **Granularidade**: Decidi salvar os artigos em **frases**, pois facilita análises detalhadas.
+
+---
+
+## Métricas de Performance
+
+* **Tempo médio de processamento por artigo**: \~2-4 segundos (dependendo do tamanho do texto).
+* **Carga incremental**: Evita duplicações e mantém o banco sempre atualizado.
+* **Escalabilidade**:
+
+  * Em cenários maiores, recomenda-se:
+
+    * Uso de **fila (RabbitMQ, Kafka)** para distribuir scraping.
+    * **Paralelismo** com `asyncio` ou `multiprocessing`. Com o objetivo de executar várias tarefas ao mesmo tempo.
+    * **Armazenamento distribuído** (PostgreSQL, BigQuery ou Data Lake).
+    * **Agendador** (Cron) para rodar em um horário programado.
+
+---
+
+## Conclusão geral
+
+Esse projeto permite:
+- Coleta automatizada de artigos.
+-Processamento linguístico e sentimental.
+-Armazenamento incremental em banco MySQL.
+-Pronto para consultas analíticas e escalável para cenários maiores.
+
 
