@@ -55,8 +55,8 @@ def calcular_metricas(texto):
         "subjetividade": round(subjetividade, 3)
     }
 
-# URL do site que vamos "raspar"
 url = "https://www.alura.com.br/empresas/artigos/tendencias-tech-2025?srsltid=AfmBOorTUjmlg_HgHICmsI6k_WNMKhE9e50nysJSAUNIE23yooqb34CV"
+#url alura
 def get_content(url,tag):
     # Faz a requisição HTTP
     response = requests.get(url)
@@ -108,22 +108,21 @@ def get_content(url,tag):
 paragraphs = get_content(url=url,tag="p")
 
 print("Estamos aqui")
-df = pd.DataFrame(paragraphs)
-# df["media_tamanho_palavra"] = df["quantidade_caracteres"] / df["quantidade_palavras"]
 
-# print(df)
+# df = pd.DataFrame(paragraphs)
 
 new_url = "https://www.cnnbrasil.com.br/tecnologia/sxsw-2025-conheca-as-10-tecnologias-que-devem-revolucionar-o-mundo/"
+#url cnn
 new_content = get_content(url=new_url,tag="p")
 
-#print("Estamos aqui")
-new_df = pd.DataFrame(new_content)
+# new_df = pd.DataFrame(new_content)
 
+#url_olhar_digital
 last_url = "https://olhardigital.com.br/2025/03/13/pro/as-10-tecnologias-que-vao-abalar-2025-segundo-o-mit/"
 last_content = get_content(url=last_url,tag="p")
 
-#print("Estamos aqui")
-last_df = pd.DataFrame(last_content)
+
+# last_df = pd.DataFrame(last_content)
 #print(last_df)
 
 

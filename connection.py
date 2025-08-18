@@ -5,10 +5,10 @@ def conectar_mysql():
     try:
         # Configurações da conexão
         conexao = mysql.connector.connect(
-            host="localhost",       # ou "127.0.0.1"
-            user="root",            # seu usuário do MySQL
-            password="NauticoFerraz15!",   # sua senha
-            database="database_on_case" # nome do banco de dados
+            host="localhost",      
+            user="root",         
+            password="NauticoFerraz15!",  
+            database="database_on_case"
         )
 
         if conexao.is_connected():
@@ -28,8 +28,8 @@ def criar_tabela():
     try:
         conexao = mysql.connector.connect(
             host="localhost",
-            user="root",           # seu usuário do MySQL
-            password="NauticoFerraz15!",  # sua senha
+            user="root",         
+            password="NauticoFerraz15!", 
             database="database_on_case"
         )
 
@@ -74,16 +74,11 @@ def criar_tabela():
 
 
 def inserir_content_tech(dados):
-    """
-    Insere um registro na tabela content_tech somente se não existir um com a mesma URL e frases.
-    
-    :param dados: dicionário com as chaves correspondendo aos campos da tabela
-    """
     try:
         conexao = mysql.connector.connect(
             host="localhost",
-            user="root",           # seu usuário MySQL
-            password="NauticoFerraz15!",  # sua senha MySQL
+            user="root",          
+            password="NauticoFerraz15!", 
             database="database_on_case"
         )
 
@@ -142,12 +137,12 @@ def ler_todos_content_tech():
     try:
         conexao = mysql.connector.connect(
             host="localhost",
-            user="root",           # seu usuário MySQL
-            password="NauticoFerraz15!",  # sua senha MySQL
+            user="root",          
+            password="NauticoFerraz15!", 
             database="database_on_case"
         )
         if conexao.is_connected():
-            cursor = conexao.cursor(dictionary=True)  # retorna dict em vez de tupla
+            cursor = conexao.cursor(dictionary=True) 
 
             cursor.execute("SELECT * FROM content_tech;")
             registros = cursor.fetchall()
@@ -165,12 +160,11 @@ def ler_todos_content_tech():
             conexao.close()
             print("🔒 Conexão encerrada.")
 
-# Exemplo de uso:
+
 # if __name__ == "__main__":
 #     dados = ler_todos_content_tech()
 #     for linha in dados:
 #         print(linha)
-# # Exemplo de uso:
 # if __name__ == "__main__":
 #     novo_dado = {
 #         "quantidade_palavras": 100,
