@@ -7,7 +7,7 @@ import textstat
 from textblob import TextBlob
 
 import re
-
+from connection import inserir_content_tech
 nltk.download("punkt")
 nltk.download("punkt_tab")  
 
@@ -95,6 +95,9 @@ def get_content(url,tag):
                 print(f"{i}. {texto}")
                 metricas = calcular_metricas(texto)
                 metricas["frases"] = texto
+                metricas["url"] = url
+                response = inserir_content_tech(metricas)
+                print("Response:", response)
                 paragraphs.append(metricas)
                 #paragraphs.append(texto)
         return paragraphs
@@ -106,23 +109,22 @@ paragraphs = get_content(url=url,tag="p")
 
 print("Estamos aqui")
 df = pd.DataFrame(paragraphs)
-df["media_tamanho_palavra"] = df["quantidade_caracteres"] / df["quantidade_palavras"]
+# df["media_tamanho_palavra"] = df["quantidade_caracteres"] / df["quantidade_palavras"]
 
 # print(df)
 
 new_url = "https://www.cnnbrasil.com.br/tecnologia/sxsw-2025-conheca-as-10-tecnologias-que-devem-revolucionar-o-mundo/"
 new_content = get_content(url=new_url,tag="p")
 
-print("Estamos aqui")
+#print("Estamos aqui")
 new_df = pd.DataFrame(new_content)
-# print(new_df)
 
 last_url = "https://olhardigital.com.br/2025/03/13/pro/as-10-tecnologias-que-vao-abalar-2025-segundo-o-mit/"
 last_content = get_content(url=last_url,tag="p")
 
-print("Estamos aqui")
+#print("Estamos aqui")
 last_df = pd.DataFrame(last_content)
-print(last_df)
+#print(last_df)
 
 
 

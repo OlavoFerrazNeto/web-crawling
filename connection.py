@@ -133,25 +133,62 @@ def inserir_content_tech(dados):
             cursor.close()
             conexao.close()
 
-# Exemplo de uso:
-if __name__ == "__main__":
-    novo_dado = {
-        "quantidade_palavras": 100,
-        "qtd_frases": 5,
-        "quantidade_caracteres": 500,
-        "media_palavras_frase": 20.0,
-        "proporcao_unicas": 0.75,
-        "proporcao_maiusculas": 0.05,
-        "palavras_curtas": 30,
-        "palavras_longas": 15,
-        "flesch": 70.5,
-        "flesch_kincaid": 8.2,
-        "smog": 7.5,
-        "coleman_liau": 10.1,
-        "sentimento": 0.2,
-        "subjetividade": 0.5,
-        "url": "https://exemplo.com/artigo",
-        "frases": "Essa é uma frase de teste."
-    }
 
-    inserir_content_tech(novo_dado)
+def ler_todos_content_tech():
+    """
+    Lê todos os registros da tabela content_tech.
+    Retorna uma lista de dicionários.
+    """
+    try:
+        conexao = mysql.connector.connect(
+            host="localhost",
+            user="root",           # seu usuário MySQL
+            password="NauticoFerraz15!",  # sua senha MySQL
+            database="database_on_case"
+        )
+        if conexao.is_connected():
+            cursor = conexao.cursor(dictionary=True)  # retorna dict em vez de tupla
+
+            cursor.execute("SELECT * FROM content_tech;")
+            registros = cursor.fetchall()
+
+            print(f"✅ {len(registros)} registros encontrados.")
+            return registros
+
+    except Error as e:
+        print(f"❌ Erro ao ler dados: {e}")
+        return []
+
+    finally:
+        if conexao.is_connected():
+            cursor.close()
+            conexao.close()
+            print("🔒 Conexão encerrada.")
+
+# Exemplo de uso:
+# if __name__ == "__main__":
+#     dados = ler_todos_content_tech()
+#     for linha in dados:
+#         print(linha)
+# # Exemplo de uso:
+# if __name__ == "__main__":
+#     novo_dado = {
+#         "quantidade_palavras": 100,
+#         "qtd_frases": 5,
+#         "quantidade_caracteres": 500,
+#         "media_palavras_frase": 20.0,
+#         "proporcao_unicas": 0.75,
+#         "proporcao_maiusculas": 0.05,
+#         "palavras_curtas": 30,
+#         "palavras_longas": 15,
+#         "flesch": 70.5,
+#         "flesch_kincaid": 8.2,
+#         "smog": 7.5,
+#         "coleman_liau": 10.1,
+#         "sentimento": 0.2,
+#         "subjetividade": 0.5,
+#         "url": "https://exemplo.com/artigo",
+#         "frases": "Essa é uma frase de teste."
+#     }
+
+#     inserir_content_tech(novo_dado)
